@@ -1,15 +1,18 @@
 package com.example.trimmerapp
 
 import android.content.Context
-import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,6 +36,21 @@ class MainActivity : AppCompatActivity() {
 
                 if(p0!!.values[0] < proximitySensor!!.maximumRange) {
                     mediaPlayer.start()
+
+                    if (Build.VERSION.SDK_INT >= 26) {
+                        (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(
+                            VibrationEffect.createOneShot(
+                                5000,
+                                VibrationEffect.DEFAULT_AMPLITUDE
+                            )
+                        )
+
+                        Toast.makeText(this@MainActivity, "vibrating", Toast.LENGTH_SHORT).show()
+                    } else {
+                        (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrate(5000)
+                    }
+
+
                 }else {
                     mediaPlayer.stop()
                     mediaPlayer.release()
@@ -57,4 +75,6 @@ class MainActivity : AppCompatActivity() {
         sensorManager!!.registerListener(sensorEventListener ,proximitySensor  ,2*1000*1000)
 
     }
+
+
 }
